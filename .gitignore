@@ -1,2 +1,5 @@
 _Design\flask_app\env
 _Design\flask_app\uploads
+__pycache__
+*.pyc
+.venv

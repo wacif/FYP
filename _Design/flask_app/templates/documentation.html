@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% block title %}Documentation{% endblock %}
+{% block content %}
+    <div class="documentation-section py-4">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <h2 class="mb-0 animate__animated animate__fadeIn text-primary">Project Documentation</h2>
+            <div class="d-flex gap-3">
+                <a href="#" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-download me-2"></i>Download PDF
+                </a>
+                <a href="#" class="btn btn-outline-primary btn-sm">
+                    <i class="fab fa-github me-2"></i>View on GitHub
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Overview Section -->
+            <div class="col-lg-8 animate__animated animate__fadeInUp">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h4 class="card-title d-flex align-items-center mb-4 text-primary">
+                            <i class="fas fa-book me-3 text-primary"></i>
+                            Project Overview
+                        </h4>
+                        <p class="card-text text-light mb-4">
+                            This project implements a real-time network intrusion detection system using advanced machine learning techniques. 
+                            The system combines the power of Wireshark for network traffic capture with state-of-the-art ensemble learning models 
+                            for accurate threat detection.
+                        </p>
+                        
+                        <h5 class="mt-4 mb-3 text-primary">Key Features</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="feature-item p-3 rounded bg-opacity-10 bg-primary">
+                                    <i class="fas fa-shield-alt text-primary me-2"></i>
+                                    <span class="text-light">Real-time threat detection</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="feature-item p-3 rounded bg-opacity-10 bg-primary">
+                                    <i class="fas fa-chart-line text-primary me-2"></i>
+                                    <span class="text-light">Advanced analytics</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="feature-item p-3 rounded bg-opacity-10 bg-primary">
+                                    <i class="fas fa-brain text-primary me-2"></i>
+                                    <span class="text-light">Ensemble learning</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="feature-item p-3 rounded bg-opacity-10 bg-primary">
+                                    <i class="fas fa-tachometer-alt text-primary me-2"></i>
+                                    <span class="text-light">High performance</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-lg-4 animate__animated animate__fadeInUp animate__delay-1s">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h4 class="card-title d-flex align-items-center mb-4 text-primary">
+                            <i class="fas fa-link me-3 text-primary"></i>
+                            Quick Links
+                        </h4>
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                                <i class="fas fa-file-alt me-3 text-primary"></i>
+                                <span class="text-light">API Documentation</span>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                                <i class="fas fa-code me-3 text-primary"></i>
+                                <span class="text-light">Code Examples</span>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                                <i class="fas fa-video me-3 text-primary"></i>
+                                <span class="text-light">Video Tutorials</span>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                                <i class="fas fa-question-circle me-3 text-primary"></i>
+                                <span class="text-light">FAQs</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technical Details -->
+            <div class="col-12 animate__animated animate__fadeInUp animate__delay-2s">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title d-flex align-items-center mb-4 text-primary">
+                            <i class="fas fa-cogs me-3 text-primary"></i>
+                            Technical Stack
+                        </h4>
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="tech-category">
+                                    <h6 class="text-primary mb-3">Data Collection</h6>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2 text-light"><i class="fas fa-check-circle me-2 text-success"></i>Wireshark</li>
+                                        <li class="mb-2 text-light"><i class="fas fa-check-circle me-2 text-success"></i>PCAP Analysis</li>
+                                        <li class="mb-2 text-light"><i class="fas fa-check-circle me-2 text-success"></i>Network Sniffing</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="tech-category">
+                                    <h6 class="text-primary mb-3">Machine Learning</h6>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2 text-light"><i class="fas fa-check-circle me-2 text-success"></i>TabNet</li>
+                                        <li class="mb-2 text-light"><i class="fas fa-check-circle me-2 text-success"></i>CatBoost</li>
+                                        <li class="mb-2 text-light"><i class="fas fa-check-circle me-2 text-success"></i>LightGBM</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="tech-category">
+                                    <h6 class="text-primary mb-3">Web Framework</h6>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2 text-light"><i class="fas fa-check-circle me-2 text-success"></i>Flask</li>
+                                        <li class="mb-2 text-light"><i class="fas fa-check-circle me-2 text-success"></i>Bootstrap 5</li>
+                                        <li class="mb-2 text-light"><i class="fas fa-check-circle me-2 text-success"></i>Chart.js</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .feature-item {
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+        }
+
+        .feature-item:hover {
+            transform: translateY(-3px);
+            background-color: rgba(99, 102, 241, 0.15) !important;
+        }
+
+        .list-group-item {
+            background-color: transparent;
+            border-color: var(--border-color);
+            transition: var(--transition);
+        }
+
+        .list-group-item:hover {
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+
+        .tech-category ul li {
+            transition: var(--transition);
+        }
+
+        .tech-category ul li:hover {
+            transform: translateX(5px);
+        }
+    </style>
+{% endblock %}
