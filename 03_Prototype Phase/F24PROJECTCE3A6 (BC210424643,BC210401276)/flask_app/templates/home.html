@@ -1,0 +1,722 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+    <!-- Animated Background -->
+    <div class="network-background"></div>
+
+    <!-- Hero Section -->
+    <section class="hero text-center position-relative">
+        <div class="container position-relative">
+            <span class="position-absolute top-0 start-50 translate-middle-x" style="filter: blur(100px); background: var(--primary-color); width: 150px; height: 150px; opacity: 0.15; border-radius: 50%;"></span>
+            <h1 class="display-4 mb-4 animate__animated animate__fadeInDown">Real-Time Network Intrusion Detection</h1>
+            <p class="lead mb-5 animate__animated animate__fadeIn animate__delay-1s">Secure your network infrastructure with advanced AI-powered threat detection using Wireshark and state-of-the-art ensemble learning algorithms.</p>
+            <div class="d-flex justify-content-center gap-3 animate__animated animate__fadeInUp animate__delay-2s">
+                <a href="{{ url_for('upload') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-upload me-2"></i>Upload Data
+                </a>
+                <a href="{{ url_for('documentation') }}" class="btn btn-outline-light btn-lg">
+                    <i class="fas fa-book me-2"></i>Learn More
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats py-5 mt-4">
+        <div class="container">
+            <div class="row g-4 text-center">
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <h3 class="display-6 fw-bold text-primary">99.8%</h3>
+                        <p class="text-secondary mb-0">Detection Accuracy</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <h3 class="display-6 fw-bold text-primary">&lt;50ms</h3>
+                        <p class="text-secondary mb-0">Response Time</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <h3 class="display-6 fw-bold text-primary">24/7</h3>
+                        <p class="text-secondary mb-0">Monitoring</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <h3 class="display-6 fw-bold text-primary">3-in-1</h3>
+                        <p class="text-secondary mb-0">ML Models</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Features -->
+    <section id="features" class="features py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Advanced Features</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-shield-alt fa-3x mb-3"></i>
+                            <h5 class="card-title">Ensemble Learning</h5>
+                            <p class="card-text">Harness the power of TabNet, CatBoost, and LightGBM working in harmony to deliver unparalleled accuracy in threat detection.</p>
+                            <div class="mt-4">
+                                <span class="badge bg-primary me-2">TabNet</span>
+                                <span class="badge bg-secondary me-2">CatBoost</span>
+                                <span class="badge bg-accent">LightGBM</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-chart-line fa-3x mb-3"></i>
+                            <h5 class="card-title">Real-Time Analysis</h5>
+                            <p class="card-text">Monitor and analyze network traffic in real-time with advanced visualization and instant threat detection capabilities.</p>
+                            <div class="mt-4">
+                                <span class="badge bg-primary me-2">Live Monitoring</span>
+                                <span class="badge bg-secondary">Instant Alerts</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-file-csv fa-3x mb-3"></i>
+                            <h5 class="card-title">Wireshark Integration</h5>
+                            <p class="card-text">Seamlessly integrate with Wireshark to analyze PCAP/CSV files and detect potential security threats in your network.</p>
+                            <div class="mt-4">
+                                <span class="badge bg-primary me-2">PCAP</span>
+                                <span class="badge bg-secondary me-2">CSV</span>
+                                <span class="badge bg-accent">Real-time</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta py-5 mt-4">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card">
+                        <div class="card-body text-center p-5">
+                            <h3 class="mb-4">Ready to Secure Your Network?</h3>
+                            <p class="lead mb-4">Start detecting and preventing network intrusions with our advanced AI-powered solution.</p>
+                            <a href="{{ url_for('upload') }}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-upload me-2"></i>Upload Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .network-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.35; /* Significantly increased opacity */
+            background-color: rgba(0, 10, 30, 0.05); /* Darker blue-tinted background for contrast */
+        }
+
+        .hero, .stats, .features, .cta {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Ensure the navbar stays above the background */
+        .navbar {
+            position: fixed;
+            z-index: 100;
+        }
+        
+        /* Add a subtle gradient overlay to enhance visibility */
+        .network-background::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 30%, rgba(0, 10, 30, 0.05) 100%);
+            pointer-events: none;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const background = document.querySelector('.network-background');
+            background.appendChild(canvas);
+
+            // Set canvas size
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // Particle system
+            const particles = [];
+            const particleCount = 120; // Further increased particle count
+            const connectionDistance = 220; // Increased connection distance
+            const particleSize = 2.5; // Larger particles for better visibility
+
+            // Define professional color palette
+            const primaryColors = [
+                'rgba(58, 110, 165, 1)', // Primary blue
+                'rgba(0, 78, 137, 1)',   // Darker blue
+                'rgba(72, 133, 193, 1)'  // Lighter blue
+            ];
+            
+            const accentColors = [
+                'rgba(255, 107, 107, 1)', // Red accent
+                'rgba(255, 159, 28, 1)'   // Orange accent
+            ];
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.vx = (Math.random() - 0.5) * 0.5; // Faster movement
+                    this.vy = (Math.random() - 0.5) * 0.5; // Faster movement
+                    this.size = Math.random() * particleSize + 1; // Larger varied sizes
+                    this.isAccent = Math.random() > 0.8; // 20% chance of accent color
+                    
+                    // Select color from palette
+                    if (this.isAccent) {
+                        this.color = accentColors[Math.floor(Math.random() * accentColors.length)];
+                    } else {
+                        this.color = primaryColors[Math.floor(Math.random() * primaryColors.length)];
+                    }
+                    
+                    // Add pulsing effect to some particles
+                    this.pulseSpeed = Math.random() * 0.05 + 0.01;
+                    this.pulseAmount = Math.random() * 0.5 + 0.5;
+                    this.pulseOffset = Math.random() * Math.PI * 2;
+                    this.isPulsing = Math.random() > 0.7; // 30% of particles pulse
+                }
+
+                update(time) {
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    // Smooth edge handling - wrap around instead of bouncing
+                    if (this.x < 0) this.x = canvas.width;
+                    if (this.x > canvas.width) this.x = 0;
+                    if (this.y < 0) this.y = canvas.height;
+                    if (this.y > canvas.height) this.y = 0;
+                    
+                    // Calculate pulse size if pulsing
+                    if (this.isPulsing) {
+                        this.currentSize = this.size + Math.sin(time * this.pulseSpeed + this.pulseOffset) * this.pulseAmount;
+                    } else {
+                        this.currentSize = this.size;
+                    }
+                }
+
+                draw() {
+                    // Draw particle with enhanced glow
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.currentSize, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                    
+                    // Add stronger glow effect
+                    const glowSize = this.currentSize * 3;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, glowSize, 0, Math.PI * 2);
+                    const glow = ctx.createRadialGradient(
+                        this.x, this.y, this.currentSize * 0.5,
+                        this.x, this.y, glowSize
+                    );
+                    
+                    // Extract base color for glow
+                    const baseColor = this.color.replace('1)', '');
+                    
+                    glow.addColorStop(0, `${baseColor}0.6)`);
+                    glow.addColorStop(0.5, `${baseColor}0.2)`);
+                    glow.addColorStop(1, `${baseColor}0)`);
+                    
+                    ctx.fillStyle = glow;
+                    ctx.fill();
+                }
+            }
+
+            // Create particles
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+
+            // Animation loop with time parameter for pulsing
+            let animationTime = 0;
+            function animate() {
+                animationTime += 0.01;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Update and draw particles
+                particles.forEach(particle => {
+                    particle.update(animationTime);
+                    particle.draw();
+                });
+
+                // Draw connections with enhanced gradient
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < connectionDistance) {
+                            // Calculate opacity based on distance with higher minimum
+                            const opacity = Math.max(0.2, (1 - distance / connectionDistance)) * 0.95;
+                            
+                            // Draw gradient line
+                            const gradient = ctx.createLinearGradient(
+                                particles[i].x, particles[i].y, 
+                                particles[j].x, particles[j].y
+                            );
+                            
+                            // Extract base colors for gradient
+                            const color1 = particles[i].color.replace('1)', `${opacity})`);
+                            const color2 = particles[j].color.replace('1)', `${opacity})`);
+                            
+                            gradient.addColorStop(0, color1);
+                            gradient.addColorStop(1, color2);
+                            
+                            // Draw connection line
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.strokeStyle = gradient;
+                            ctx.lineWidth = 1.2; // Thicker lines for better visibility
+                            ctx.stroke();
+                            
+                            // Add subtle glow to connections for important nodes
+                            if ((particles[i].isAccent || particles[j].isAccent) && distance < connectionDistance * 0.5) {
+                                ctx.beginPath();
+                                ctx.moveTo(particles[i].x, particles[i].y);
+                                ctx.lineTo(particles[j].x, particles[j].y);
+                                ctx.strokeStyle = gradient;
+                                ctx.lineWidth = 2.5; // Thicker glow
+                                ctx.globalAlpha = 0.15; // Transparent glow
+                                ctx.stroke();
+                                ctx.globalAlpha = 1.0; // Reset alpha
+                            }
+                        }
+                    }
+                }
+
+                requestAnimationFrame(animate);
+            }
+
+            // Start animation
+            animate();
+
+            // Add enhanced mouse interaction
+            let mouse = { x: null, y: null };
+            let mouseRadius = 250; // Even larger influence radius
+            let mouseActive = false;
+            let mouseEffectTime = 0;
+            let mouseTrail = []; // Store recent mouse positions for trail effect
+
+            canvas.addEventListener('mousemove', function(e) {
+                // Update mouse position
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+                mouseActive = true;
+                mouseEffectTime = 40; // Effect lasts longer
+                
+                // Add current position to trail (limit to 10 positions)
+                mouseTrail.push({x: mouse.x, y: mouse.y, age: 0});
+                if (mouseTrail.length > 10) mouseTrail.shift();
+                
+                // Create an enhanced pulse effect at mouse position
+                const pulseSize = 12; // Larger pulse
+                ctx.beginPath();
+                ctx.arc(mouse.x, mouse.y, pulseSize, 0, Math.PI * 2);
+                
+                // Create a more vibrant gradient for the pulse
+                const pulseGradient = ctx.createRadialGradient(
+                    mouse.x, mouse.y, 0,
+                    mouse.x, mouse.y, pulseSize * 4
+                );
+                
+                pulseGradient.addColorStop(0, 'rgba(58, 110, 165, 0.9)');
+                pulseGradient.addColorStop(0.4, 'rgba(58, 110, 165, 0.4)');
+                pulseGradient.addColorStop(0.7, 'rgba(58, 110, 165, 0.1)');
+                pulseGradient.addColorStop(1, 'rgba(58, 110, 165, 0)');
+                
+                ctx.fillStyle = pulseGradient;
+                ctx.fill();
+                
+                // Draw mouse trail
+                mouseTrail.forEach((point, index) => {
+                    point.age++;
+                    const trailOpacity = 1 - (point.age / 10);
+                    if (trailOpacity > 0) {
+                        const trailSize = pulseSize * (1 - point.age/10) * 0.8;
+                        ctx.beginPath();
+                        ctx.arc(point.x, point.y, trailSize, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(58, 110, 165, ${trailOpacity * 0.5})`;
+                        ctx.fill();
+                    }
+                });
+                
+                // Enhanced particle movement with attraction/repulsion
+                particles.forEach(particle => {
+                    const dx = mouse.x - particle.x;
+                    const dy = mouse.y - particle.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < mouseRadius) {
+                        const angle = Math.atan2(dy, dx);
+                        
+                        // Create a zone of attraction and repulsion
+                        if (distance > mouseRadius * 0.5) {
+                            // Outer zone: gentle attraction
+                            const force = (mouseRadius - distance) / mouseRadius * 0.3;
+                            particle.vx += Math.cos(angle) * force;
+                            particle.vy += Math.sin(angle) * force;
+                        } else {
+                            // Inner zone: stronger repulsion
+                            const force = (mouseRadius * 0.5 - distance) / (mouseRadius * 0.5) * 0.8;
+                            particle.vx -= Math.cos(angle) * force;
+                            particle.vy -= Math.sin(angle) * force;
+                        }
+                        
+                        // Temporarily increase particle size and glow on mouse proximity
+                        if (distance < mouseRadius * 0.3) {
+                            particle.size = Math.min(particle.size * 1.08, particleSize * 2.5);
+                            
+                            // Chance to change particle color to accent color
+                            if (!particle.isAccent && Math.random() > 0.95) {
+                                particle.isAccent = true;
+                                particle.color = accentColors[Math.floor(Math.random() * accentColors.length)];
+                            }
+                        }
+                    }
+                });
+                
+                // Reset mouse after 2 seconds of inactivity
+                setTimeout(() => {
+                    mouseActive = false;
+                }, 2000);
+            });
+            
+            // Add enhanced ripple effect on click
+            canvas.addEventListener('click', function(e) {
+                const rippleX = e.clientX;
+                const rippleY = e.clientY;
+                
+                // Create multi-layered ripple animation with immediate visual feedback
+                let rippleSize = 0;
+                let rippleOpacity = 0.9; // Higher starting opacity
+                let rippleWidth = 4; // Thicker initial line
+                
+                // Immediate visual feedback - flash effect
+                ctx.beginPath();
+                ctx.arc(rippleX, rippleY, 20, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.fill();
+                
+                function drawRipple() {
+                    rippleSize += 10; // Much faster expansion
+                    rippleOpacity -= 0.02; // Faster fade
+                    rippleWidth *= 0.98; // Gradually thinner
+                    
+                    if (rippleOpacity > 0) {
+                        // Draw main ripple
+                        ctx.beginPath();
+                        ctx.arc(rippleX, rippleY, rippleSize, 0, Math.PI * 2);
+                        ctx.strokeStyle = `rgba(58, 110, 165, ${rippleOpacity})`;
+                        ctx.lineWidth = rippleWidth;
+                        ctx.stroke();
+                        
+                        // Draw secondary ripple (accent color)
+                        ctx.beginPath();
+                        ctx.arc(rippleX, rippleY, rippleSize * 0.7, 0, Math.PI * 2);
+                        ctx.strokeStyle = `rgba(255, 107, 107, ${rippleOpacity * 0.8})`;
+                        ctx.lineWidth = rippleWidth * 0.7;
+                        ctx.stroke();
+                        
+                        requestAnimationFrame(drawRipple);
+                    }
+                }
+                
+                // Start ripple animation immediately
+                drawRipple();
+                
+                // Create burst of particles with immediate effect
+                const burstCount = 15; // More particles for better visibility
+                for (let i = 0; i < burstCount; i++) {
+                    const angle = (i / burstCount) * Math.PI * 2;
+                    const speed = Math.random() * 2 + 1.5; // Much faster burst
+                    const newParticle = new Particle();
+                    newParticle.x = rippleX;
+                    newParticle.y = rippleY;
+                    newParticle.vx = Math.cos(angle) * speed;
+                    newParticle.vy = Math.sin(angle) * speed;
+                    newParticle.size = Math.random() * particleSize * 2.5 + 2; // Larger particles
+                    
+                    // Alternate between primary and accent colors for a more organized pattern
+                    if (i % 2 === 0) {
+                        newParticle.isAccent = true;
+                        newParticle.color = accentColors[i % accentColors.length];
+                    } else {
+                        newParticle.isAccent = false;
+                        newParticle.color = primaryColors[i % primaryColors.length];
+                    }
+                    
+                    // Add pulsing to all burst particles with faster pulse
+                    newParticle.isPulsing = true;
+                    newParticle.pulseSpeed = Math.random() * 0.1 + 0.05; // Faster pulse (was 0.08 + 0.02)
+                    newParticle.pulseAmount = Math.random() * 1 + 1; // Stronger pulse (was 0.6 + 0.4)
+                    
+                    // Replace existing particles
+                    const replaceIndex = Math.floor(Math.random() * particles.length);
+                    particles[replaceIndex] = newParticle;
+                }
+                
+                // Create a stronger shockwave effect that affects nearby particles
+                particles.forEach(particle => {
+                    const dx = rippleX - particle.x;
+                    const dy = rippleY - particle.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 200) { // Larger radius of effect
+                        const angle = Math.atan2(dy, dx);
+                        const force = (200 - distance) / 200 * 3; // Stronger force
+                        particle.vx -= Math.cos(angle) * force;
+                        particle.vy -= Math.sin(angle) * force;
+                        
+                        // Higher chance to change color
+                        if (Math.random() > 0.5) { // 50% chance instead of 30%
+                            particle.isAccent = !particle.isAccent;
+                            if (particle.isAccent) {
+                                particle.color = accentColors[Math.floor(Math.random() * accentColors.length)];
+                            } else {
+                                particle.color = primaryColors[Math.floor(Math.random() * primaryColors.length)];
+                            }
+                        }
+                    }
+                });
+            });
+            
+            // Gradually return particles to normal speed when mouse is inactive - faster transitions
+            setInterval(() => {
+                if (!mouseActive) {
+                    particles.forEach(particle => {
+                        // Dampen velocity to return to normal with faster easing
+                        particle.vx *= 0.9; // Faster damping (was 0.95)
+                        particle.vy *= 0.9; // Faster damping (was 0.95)
+                        
+                        // Add a slightly larger random movement to keep things interesting
+                        particle.vx += (Math.random() - 0.5) * 0.06; // More movement (was 0.04)
+                        particle.vy += (Math.random() - 0.5) * 0.06; // More movement (was 0.04)
+                        
+                        // Faster return to original size
+                        if (particle.size > particleSize) {
+                            particle.size = particle.size * 0.9 + particleSize * 0.1; // Faster size transition (was 0.95/0.05)
+                        }
+                    });
+                }
+                
+                // Decrease mouse effect time
+                if (mouseEffectTime > 0) {
+                    mouseEffectTime--;
+                }
+                
+                // Age the mouse trail points faster
+                mouseTrail = mouseTrail.filter(point => point.age < 8); // Shorter trail (was 10)
+                mouseTrail.forEach(point => point.age += 1.5); // Faster aging (was 1)
+            }, 20); // Even faster update interval (was 30)
+            
+            // Add more sophisticated particle bursts for visual interest - more frequent
+            setInterval(() => {
+                if (Math.random() > 0.5) { // 50% chance of burst (was 0.6 = 40%)
+                    const burstX = Math.random() * canvas.width;
+                    const burstY = Math.random() * canvas.height;
+                    
+                    // Determine burst pattern
+                    const burstType = Math.floor(Math.random() * 3); // 0: radial, 1: directional, 2: spiral
+                    const burstCount = Math.floor(Math.random() * 6) + 8; // 8-13 particles (was 6-10)
+                    
+                    for (let i = 0; i < burstCount; i++) {
+                        let angle, speed, newParticle;
+                        
+                        switch(burstType) {
+                            case 0: // Radial burst
+                                angle = (i / burstCount) * Math.PI * 2;
+                                speed = Math.random() * 1 + 0.7; // Faster (was 0.8 + 0.5)
+                                break;
+                            case 1: // Directional burst
+                                const mainDirection = Math.random() * Math.PI * 2;
+                                angle = mainDirection + (Math.random() - 0.5) * Math.PI * 0.5;
+                                speed = Math.random() * 1.2 + 0.8; // Faster (was 1 + 0.6)
+                                break;
+                            case 2: // Spiral burst
+                                angle = (i / burstCount) * Math.PI * 2;
+                                speed = 0.3 + (i / burstCount) * 1.5; // Faster (was 0.2 + ... * 1.2)
+                                break;
+                        }
+                        
+                        newParticle = new Particle();
+                        newParticle.x = burstX;
+                        newParticle.y = burstY;
+                        newParticle.vx = Math.cos(angle) * speed;
+                        newParticle.vy = Math.sin(angle) * speed;
+                        newParticle.size = Math.random() * particleSize * 1.8 + 1.5; // Larger (was 1.5 + 1.2)
+                        
+                        // Use a consistent color scheme for each burst
+                        if (Math.random() > 0.5) {
+                            newParticle.isAccent = true;
+                            newParticle.color = accentColors[Math.floor(Math.random() * accentColors.length)];
+                        } else {
+                            newParticle.isAccent = false;
+                            newParticle.color = primaryColors[Math.floor(Math.random() * primaryColors.length)];
+                        }
+                        
+                        // Replace an existing particle
+                        const replaceIndex = Math.floor(Math.random() * particles.length);
+                        particles[replaceIndex] = newParticle;
+                    }
+                }
+            }, 2500); // More frequent bursts (was 3500)
+            
+            // Add enhanced floating data nodes that enter from screen edges - more frequent
+            setInterval(() => {
+                if (Math.random() > 0.6) { // 40% chance (was 0.65 = 35%)
+                    // Create a data node at a random edge of the screen
+                    const side = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
+                    let nodeX, nodeY, nodeVx, nodeVy;
+                    
+                    // Determine node type: 0: small packet, 1: medium cluster, 2: large data transfer
+                    const nodeType = Math.floor(Math.random() * 3);
+                    let clusterCount, clusterSpread, particleSize, speedFactor;
+                    
+                    switch(nodeType) {
+                        case 0: // Small packet (3-4 particles, tight formation, fast)
+                            clusterCount = Math.floor(Math.random() * 2) + 3;
+                            clusterSpread = 10;
+                            particleSize = 1.2;
+                            speedFactor = 2; // Faster (was 1.5)
+                            break;
+                        case 1: // Medium cluster (5-7 particles, medium spread, normal speed)
+                            clusterCount = Math.floor(Math.random() * 3) + 5;
+                            clusterSpread = 25;
+                            particleSize = 1.5;
+                            speedFactor = 1.3; // Faster (was 1.0)
+                            break;
+                        case 2: // Large data transfer (8-12 particles, wide spread, slower)
+                            clusterCount = Math.floor(Math.random() * 5) + 8;
+                            clusterSpread = 40;
+                            particleSize = 1.8;
+                            speedFactor = 0.9; // Faster (was 0.7)
+                            break;
+                    }
+                    
+                    // Determine entry point and velocity
+                    switch(side) {
+                        case 0: // top
+                            nodeX = Math.random() * canvas.width;
+                            nodeY = -20;
+                            nodeVx = (Math.random() - 0.5) * 0.6 * speedFactor; // More horizontal movement
+                            nodeVy = (Math.random() * 0.6 + 0.4) * speedFactor; // Faster downward
+                            break;
+                        case 1: // right
+                            nodeX = canvas.width + 20;
+                            nodeY = Math.random() * canvas.height;
+                            nodeVx = -(Math.random() * 0.6 + 0.4) * speedFactor; // Faster leftward
+                            nodeVy = (Math.random() - 0.5) * 0.6 * speedFactor; // More vertical movement
+                            break;
+                        case 2: // bottom
+                            nodeX = Math.random() * canvas.width;
+                            nodeY = canvas.height + 20;
+                            nodeVx = (Math.random() - 0.5) * 0.6 * speedFactor; // More horizontal movement
+                            nodeVy = -(Math.random() * 0.6 + 0.4) * speedFactor; // Faster upward
+                            break;
+                        case 3: // left
+                            nodeX = -20;
+                            nodeY = Math.random() * canvas.height;
+                            nodeVx = (Math.random() * 0.6 + 0.4) * speedFactor; // Faster rightward
+                            nodeVy = (Math.random() - 0.5) * 0.6 * speedFactor; // More vertical movement
+                            break;
+                    }
+                    
+                    // Choose a consistent color scheme for this data packet
+                    const useAccentColor = Math.random() > 0.6; // 40% chance of accent color
+                    let packetColor;
+                    
+                    if (useAccentColor) {
+                        packetColor = accentColors[Math.floor(Math.random() * accentColors.length)];
+                    } else {
+                        packetColor = primaryColors[Math.floor(Math.random() * primaryColors.length)];
+                    }
+                    
+                    // Create particles in a cluster with a leader particle
+                    for (let i = 0; i < clusterCount; i++) {
+                        const newParticle = new Particle();
+                        
+                        // First particle is the leader, others follow with slight variations
+                        if (i === 0) {
+                            newParticle.x = nodeX;
+                            newParticle.y = nodeY;
+                            newParticle.vx = nodeVx;
+                            newParticle.vy = nodeVy;
+                            newParticle.size = Math.random() * particleSize * 1.5 + 1.8;
+                            newParticle.isLeader = true; // Mark as leader
+                        } else {
+                            // Followers have positions relative to leader with some randomness
+                            const offset = (i / clusterCount) * Math.PI * 2;
+                            const distance = Math.random() * clusterSpread;
+                            newParticle.x = nodeX + Math.cos(offset) * distance;
+                            newParticle.y = nodeY + Math.sin(offset) * distance;
+                            
+                            // Slightly varied velocity
+                            newParticle.vx = nodeVx + (Math.random() - 0.5) * 0.15; // More variation (was 0.1)
+                            newParticle.vy = nodeVy + (Math.random() - 0.5) * 0.15; // More variation (was 0.1)
+                            newParticle.size = Math.random() * particleSize + 1;
+                            newParticle.isLeader = false;
+                        }
+                        
+                        // Use consistent color for the packet with slight variations
+                        newParticle.isAccent = useAccentColor;
+                        newParticle.color = packetColor;
+                        
+                        // Add pulsing to some particles in the cluster
+                        newParticle.isPulsing = Math.random() > 0.2; // 80% chance of pulsing (was 0.3 = 70%)
+                        if (newParticle.isPulsing) {
+                            newParticle.pulseSpeed = Math.random() * 0.1 + 0.03; // Faster pulse (was 0.08 + 0.02)
+                            newParticle.pulseAmount = Math.random() * 0.8 + 0.5; // Stronger pulse (was 0.6 + 0.4)
+                            // Synchronize pulsing within the cluster
+                            newParticle.pulseOffset = i * (Math.PI / clusterCount);
+                        }
+                        
+                        // Replace an existing particle
+                        const replaceIndex = Math.floor(Math.random() * particles.length);
+                        particles[replaceIndex] = newParticle;
+                    }
+                }
+            }, 4000); // More frequent data nodes (was 5000)
+        });
+    </script>
+{% endblock %}
