@@ -1,3 +1,9 @@
 Flask
 pandas
 numpy
+catboost
+lightgbm
+pytorch-tabnet
+joblib
+scikit-learn
+Werkzeug

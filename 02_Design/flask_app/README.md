@@ -1,41 +1,97 @@
-# Network Traffic Analyzer - Test Sample
+# Network Traffic Analyzer with ML Models
 
-This repository contains a sample CSV file for testing the Network Traffic Analyzer application.
+A Flask web application that analyzes network traffic data using multiple machine learning models to detect malicious packets.
 
-## Sample Data Description
+## Project Overview
 
-The `static/sample_network_traffic.csv` file contains simulated network traffic data with the following characteristics:
+This application allows users to upload network traffic data in CSV format, which is then analyzed by three different machine learning models (CatBoost, LightGBM, and TabNet) to identify potential security threats.
 
-- 30 packet records with timestamps, IP addresses, protocols, and various network metrics
-- Mix of TCP, UDP, and ICMP traffic
-- Contains both normal and potentially malicious traffic patterns
-- Includes port scanning attempts, normal web browsing, and DNS queries
+## Features
 
-## How to Use the Sample Data
+- User authentication system
+- File upload for CSV network traffic data
+- Data preprocessing pipeline that matches the training pipeline
+- Real-time analysis using three ML models:
+  - CatBoost
+  - LightGBM
+  - TabNet
+- Results dashboard showing:
+  - Total number of packets analyzed
+  - Count of malicious packets detected
+  - Actual processing time
+  - Detailed packet information in a paginated table
+- Session management for large datasets
+- Model status indicators
 
-1. Start your Flask application
-2. Navigate to the upload page
-3. Upload the `sample_network_traffic.csv` file
-4. The application will analyze the data and display the results on the results page
+## Installation
 
-## Expected Results
+1. Clone this repository
+2. Create a virtual environment:
+   ```
+   python -m venv .venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   ```
+3. Install required packages:
+   ```
+   pip install -r requirements.txt
+   ```
+4. Ensure you have the trained models in the `trained_models` directory:
+   - `trained_models/catboost_model.cbm`
+   - `trained_models/lightgbm_model.pkl`
+   - `trained_models/tabnet_model.zip`
 
-When you upload the sample file, you should see:
+## Requirements
 
-- Total of 30 packets analyzed
-- Several packets flagged as potentially malicious (port scan attempts)
-- Protocol distribution showing primarily TCP traffic with some UDP and ICMP
-- Traffic analysis over time showing patterns of normal and suspicious activity
-- Security recommendations based on the detected threats
+- Python 3.7+
+- Flask
+- pandas
+- numpy
+- CatBoost
+- LightGBM
+- PyTorch and TabNet
+- joblib
+- scikit-learn
 
-## Sample Malicious Patterns
+## Usage
 
-The sample data includes the following suspicious patterns:
+1. Start the application:
+   ```
+   python app.py
+   ```
+2. Navigate to `http://127.0.0.1:5000` in your web browser
+3. Log in using the test credentials:
+   - Email: test@example.com
+   - Password: test123
+4. Upload a CSV file containing network traffic data
+5. View the analysis results
 
-1. **Port Scanning**: Multiple SYN packets from external IPs targeting common service ports (22, 23, 3389)
-2. **Failed SMB Connection Attempts**: Repeated connection attempts to port 445
-3. **Unusual Response Patterns**: Several connections with no response packets
+## Input Data Format
 
-## Notes
+The application expects CSV files with network traffic data. The following columns are required:
+- Source (IP address)
+- Destination (IP address)
+- Protocol
+- Length (packet size)
 
-This is test data only and does not represent actual network threats. It is designed to demonstrate the functionality of the Network Traffic Analyzer application. 
+The application has column mapping capabilities to handle slight variations in column names.
+
+## Project Structure
+
+- `app.py`: Main application file
+- `templates/`: HTML templates for the web interface
+- `static/`: Static files (CSS, JS, images)
+- `trained_models/`: Directory containing the trained ML models
+- `uploads/`: Temporary storage for uploaded files
+- `results/`: Storage for analysis results
+
+## Sample Data
+
+A sample CSV file is included in `static/sample_network_traffic.csv` for testing purposes.
+
+## Future Improvements
+
+- PCAP file analysis support
+- Additional machine learning models
+- User management system
+- Enhanced visualization of analysis results
+- API endpoints for programmatic access 

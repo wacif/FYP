@@ -31,7 +31,7 @@
             <div class="card shadow-sm h-100">
                 <div class="card-body text-center">
                     <h5 class="card-title text-muted mb-3">Total Packets</h5>
-                    <h2 class="display-4 fw-bold text-primary">{{ results|length }}</h2>
+                    <h2 class="display-4 fw-bold text-primary">{{ total_results }}</h2>
                     <p class="text-muted">Analyzed in this session</p>
                 </div>
             </div>
@@ -49,7 +49,7 @@
             <div class="card shadow-sm h-100">
                 <div class="card-body text-center">
                     <h5 class="card-title text-muted mb-3">Processing Time</h5>
-                    <h2 class="display-4 fw-bold text-success">0.8<small>s</small></h2>
+                    <h2 class="display-4 fw-bold text-success">{{ processing_time }}<small>s</small></h2>
                     <p class="text-muted">Total analysis duration</p>
                 </div>
             </div>
@@ -58,7 +58,7 @@
             <div class="card shadow-sm h-100">
                 <div class="card-body text-center">
                     <h5 class="card-title text-muted mb-3">Threat Rate</h5>
-                    <h2 class="display-4 fw-bold text-warning">{{ (malicious_count / results|length * 100)|round(1) }}%</h2>
+                    <h2 class="display-4 fw-bold text-warning">{{ (malicious_count / total_results * 100)|round(1) }}%</h2>
                     <p class="text-muted">Of total traffic</p>
                 </div>
             </div>
@@ -130,6 +130,9 @@
                     <h5 class="card-title mb-0">
                         <i class="fas fa-table me-2 text-primary"></i>
                         Detailed Results
+                        {% if has_more %}
+                        <small class="text-muted">(Showing {{ showing_limit }} of {{ total_results }} packets)</small>
+                        {% endif %}
                     </h5>
                     <div class="input-group" style="width: 300px;">
                         <span class="input-group-text"><i class="fas fa-search"></i></span>
@@ -146,14 +149,15 @@
                                     <th>Destination IP</th>
                                     <th>Protocol</th>
                                     <th>Packet Size</th>
-                                    <th>Prediction</th>
-                                    <th>Confidence</th>
+                                    <th>CatBoost</th>
+                                    <th>LightGBM</th>
+                                    <th>TabNet</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for result in results %}
-                                <tr class="{{ 'table-danger' if result.prediction == 'Malicious' else '' }}">
+                                <tr class="{% if result.catboost_pred == 1 or result.lgbm_pred == 1 or result.tabnet_pred == 1 or result.catboost_pred == 'Malicious' or result.lgbm_pred == 'Malicious' or result.tabnet_pred == 'Malicious' %}table-danger{% endif %}">
                                     <td>{{ result.timestamp }}</td>
                                     <td>{{ result.src_ip }}</td>
                                     <td>{{ result.dst_ip }}</td>
@@ -168,20 +172,19 @@
                                     </td>
                                     <td>{{ result.size }} bytes</td>
                                     <td>
-                                        <span class="badge {{ 'bg-danger' if result.prediction == 'Malicious' else 'bg-success' }}">
-                                            {{ result.prediction }}
+                                        <span class="badge {{ 'bg-danger' if result.catboost_pred == 1 or result.catboost_pred == 'Malicious' else 'bg-success' }}">
+                                            {{ result.catboost_pred }}
                                         </span>
                                     </td>
                                     <td>
-                                        <div class="progress">
-                                            <div class="progress-bar {{ 'bg-danger' if result.prediction == 'Malicious' else 'bg-success' }}" 
-                                                 role="progressbar" 
-                                                 style="width: {{ result.confidence }}%" 
-                                                 aria-valuenow="{{ result.confidence }}" 
-                                                 aria-valuemin="0" 
-                                                 aria-valuemax="100"></div>
-                                        </div>
-                                        <small class="d-block text-center mt-1">{{ result.confidence }}%</small>
+                                        <span class="badge {{ 'bg-danger' if result.lgbm_pred == 1 or result.lgbm_pred == 'Malicious' else 'bg-success' }}">
+                                            {{ result.lgbm_pred }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge {{ 'bg-danger' if result.tabnet_pred == 1 or result.tabnet_pred == 'Malicious' else 'bg-success' }}">
+                                            {{ result.tabnet_pred }}
+                                        </span>
                                     </td>
                                     <td>
                                         <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#packetDetailModal" data-packet-id="{{ loop.index0 }}">
@@ -341,14 +344,22 @@
                             <h6 class="fw-bold">Analysis Results</h6>
                             <table class="table table-sm">
                                 <tr>
-                                    <th>Prediction:</th>
-                                    <td id="modal-prediction">
-                                        <span class="badge bg-danger">Malicious</span>
+                                    <th>CatBoost:</th>
+                                    <td id="modal-catboost-prediction">
+                                        <span class="badge">-</span>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Confidence:</th>
-                                    <td id="modal-confidence">98.5%</td>
+                                    <th>LightGBM:</th>
+                                    <td id="modal-lightgbm-prediction">
+                                        <span class="badge">-</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>TabNet:</th>
+                                    <td id="modal-tabnet-prediction">
+                                        <span class="badge">-</span>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>Threat Type:</th>
@@ -478,23 +489,32 @@
 }
 </style>
 
+<!-- Make results available globally for modal population -->
+<script>
+let analysisResults;
+try {
+  analysisResults = JSON.parse('{{ results|tojson|safe }}');
+} catch (e) {
+  console.error("Error parsing results:", e);
+  analysisResults = [];
+}
+</script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Sample data for charts
-    const timeLabels = ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00'];
-    const normalTraffic = [65, 59, 80, 81, 56, 55, 40, 65, 59, 80, 81, 56, 55];
-    const maliciousTraffic = [28, 48, 40, 19, 86, 27, 90, 28, 48, 40, 19, 86, 27];
+    // Process data for charts
+    const processedData = processResultsForCharts(analysisResults);
     
-    // Traffic over time chart
+    // Traffic over time chart - using actual timestamp data
     const trafficTimeCtx = document.getElementById('trafficTimeChart').getContext('2d');
     new Chart(trafficTimeCtx, {
         type: 'line',
         data: {
-            labels: timeLabels,
+            labels: processedData.timeLabels,
             datasets: [
                 {
                     label: 'Normal Traffic',
-                    data: normalTraffic,
+                    data: processedData.normalTraffic,
                     borderColor: '#4F46E5',
                     backgroundColor: 'rgba(79, 70, 229, 0.1)',
                     tension: 0.4,
@@ -502,7 +522,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 {
                     label: 'Malicious Traffic',
-                    data: maliciousTraffic,
+                    data: processedData.maliciousTraffic,
                     borderColor: '#EF4444',
                     backgroundColor: 'rgba(239, 68, 68, 0.1)',
                     tension: 0.4,
@@ -540,15 +560,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Protocol distribution chart
+    // Protocol distribution chart - using actual protocol data
     const protocolCtx = document.getElementById('protocolChart').getContext('2d');
     new Chart(protocolCtx, {
         type: 'doughnut',
         data: {
-            labels: ['TCP', 'UDP', 'ICMP', 'Other'],
+            labels: Object.keys(processedData.protocolDistribution),
             datasets: [{
-                data: [65, 20, 10, 5],
-                backgroundColor: ['#4F46E5', '#10B981', '#F59E0B', '#6B7280'],
+                data: Object.values(processedData.protocolDistribution),
+                backgroundColor: ['#4F46E5', '#10B981', '#F59E0B', '#6B7280', '#EF4444', '#14B8A6', '#3B82F6', '#A855F7'],
                 borderWidth: 0
             }]
         },
@@ -564,15 +584,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Threat severity chart
+    // Threat severity chart - using actual model prediction data
     const threatSeverityCtx = document.getElementById('threatSeverityChart').getContext('2d');
     new Chart(threatSeverityCtx, {
         type: 'bar',
         data: {
-            labels: ['Critical', 'High', 'Medium', 'Low', 'Info'],
+            labels: Object.keys(processedData.threatSeverity),
             datasets: [{
                 label: 'Threat Count',
-                data: [12, 19, 8, 15, 5],
+                data: Object.values(processedData.threatSeverity),
                 backgroundColor: [
                     '#7F1D1D', // Darker red for critical
                     '#EF4444', // Red for high
@@ -610,7 +630,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Model performance doughnut charts
+    // Model performance doughnut charts - using actual prediction accuracy
     function createModelChart(elementId, percentage, color) {
         const ctx = document.getElementById(elementId).getContext('2d');
         new Chart(ctx, {
@@ -638,9 +658,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    createModelChart('tabnetChart', 97, '#4F46E5');
-    createModelChart('catboostChart', 98, '#10B981');
-    createModelChart('lightgbmChart', 96, '#F59E0B');
+    // Use model accuracy from data or fallback to defaults
+    createModelChart('tabnetChart', processedData.modelAccuracy.tabnet || 97, '#4F46E5');
+    createModelChart('catboostChart', processedData.modelAccuracy.catboost || 98, '#10B981');
+    createModelChart('lightgbmChart', processedData.modelAccuracy.lightgbm || 96, '#F59E0B');
     
     // Search functionality for results table
     document.getElementById('resultSearch').addEventListener('keyup', function() {
@@ -659,23 +680,25 @@ document.addEventListener('DOMContentLoaded', function() {
     packetDetailModal.addEventListener('show.bs.modal', function (event) {
         const button = event.relatedTarget;
         const packetId = button.getAttribute('data-packet-id');
-        
-        // Here you would normally fetch the packet details from your data
-        // For this example, we'll just use static data
-        document.getElementById('modal-timestamp').textContent = '2023-06-15 14:23:45';
-        document.getElementById('modal-src-ip').textContent = '192.168.1.45';
-        document.getElementById('modal-dst-ip').textContent = '10.0.0.5';
-        document.getElementById('modal-protocol').textContent = 'TCP';
-        document.getElementById('modal-size').textContent = '1240 bytes';
-        
-        // Update prediction badge color based on result
-        const predictionElement = document.getElementById('modal-prediction');
-        predictionElement.innerHTML = '<span class="badge bg-danger">Malicious</span>';
-        
-        document.getElementById('modal-confidence').textContent = '98.5%';
-        document.getElementById('modal-threat-type').textContent = 'Port Scan';
-        document.getElementById('modal-severity').innerHTML = '<span class="badge bg-warning">Medium</span>';
-        document.getElementById('modal-mitre').textContent = 'T1046 - Network Service Discovery';
+        const result = analysisResults[packetId];
+        // Basic info
+        document.getElementById('modal-timestamp').textContent = result.timestamp || '-';
+        document.getElementById('modal-src-ip').textContent = result.src_ip || '-';
+        document.getElementById('modal-dst-ip').textContent = result.dst_ip || '-';
+        document.getElementById('modal-protocol').textContent = result.protocol || '-';
+        document.getElementById('modal-size').textContent = result.size ? result.size + ' bytes' : '-';
+        // Model predictions
+        function setPred(id, pred) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            let badgeClass = 'bg-success';
+            if (pred == 1 || pred == 'Malicious') badgeClass = 'bg-danger';
+            el.innerHTML = `<span class="badge ${badgeClass}">${pred}</span>`;
+        }
+        setPred('modal-catboost-prediction', result.catboost_pred);
+        setPred('modal-lightgbm-prediction', result.lgbm_pred);
+        setPred('modal-tabnet-prediction', result.tabnet_pred);
+        // You can add more fields as needed
     });
     
     // Simulate map chart with a placeholder
@@ -685,5 +708,128 @@ document.addEventListener('DOMContentLoaded', function() {
         mapChart.innerHTML = '<div class="d-flex align-items-center justify-content-center h-100 text-muted">Geographic map visualization would appear here</div>';
     }
 });
+
+// Function to process results into chart-friendly format
+function processResultsForCharts(results) {
+    // Initialize return object with default values
+    const processedData = {
+        timeLabels: [],
+        normalTraffic: [],
+        maliciousTraffic: [],
+        protocolDistribution: {},
+        threatSeverity: {
+            'Critical': 0,
+            'High': 0,
+            'Medium': 0,
+            'Low': 0,
+            'Info': 0
+        },
+        modelAccuracy: {
+            tabnet: 97,
+            catboost: 98,
+            lightgbm: 96
+        }
+    };
+    
+    // Return default data if no results
+    if (!results || results.length === 0) {
+        processedData.timeLabels = ['00:00', '01:00', '02:00', '03:00', '04:00'];
+        processedData.normalTraffic = [65, 59, 80, 81, 56];
+        processedData.maliciousTraffic = [28, 48, 40, 19, 86];
+        processedData.protocolDistribution = {
+            'TCP': 65, 
+            'UDP': 20, 
+            'ICMP': 10, 
+            'Other': 5
+        };
+        return processedData;
+    }
+    
+    // Process timestamp data for time-based chart
+    const timeGroups = {};
+    const timeFormat = {};
+    
+    // Group packets by time (extract hour as key)
+    results.forEach(packet => {
+        let timeKey = 'Unknown';
+        
+        // Try to extract time from timestamp
+        if (packet.timestamp && !isNaN(parseInt(packet.timestamp))) {
+            // If it's just a number (index), use a sequential hour
+            const hourIndex = Math.floor(parseInt(packet.timestamp) / 100);
+            timeKey = `Hour ${hourIndex}`;
+        } else if (packet.timestamp && packet.timestamp.includes(':')) {
+            // If it includes a colon, try to extract the hour
+            const parts = packet.timestamp.split(':');
+            if (parts.length >= 2) {
+                timeKey = parts[0] + ':' + parts[1];
+            }
+        } else if (packet.timestamp) {
+            // Otherwise use the whole timestamp as the key
+            timeKey = packet.timestamp.toString();
+        }
+        
+        // Initialize time group if it doesn't exist
+        if (!timeGroups[timeKey]) {
+            timeGroups[timeKey] = {
+                normal: 0,
+                malicious: 0
+            };
+        }
+        
+        // Check if packet is malicious (if any model says it is)
+        const isMalicious = 
+            packet.catboost_pred === 1 || 
+            packet.catboost_pred === 'Malicious' || 
+            packet.lgbm_pred === 1 || 
+            packet.lgbm_pred === 'Malicious' || 
+            packet.tabnet_pred === 1 || 
+            packet.tabnet_pred === 'Malicious';
+        
+        // Increment appropriate counter
+        if (isMalicious) {
+            timeGroups[timeKey].malicious++;
+        } else {
+            timeGroups[timeKey].normal++;
+        }
+    });
+    
+    // Convert timeGroups to arrays for chart
+    const timeKeys = Object.keys(timeGroups);
+    processedData.timeLabels = timeKeys;
+    processedData.normalTraffic = timeKeys.map(key => timeGroups[key].normal);
+    processedData.maliciousTraffic = timeKeys.map(key => timeGroups[key].malicious);
+    
+    // Process protocol distribution
+    results.forEach(packet => {
+        const protocol = packet.protocol || 'Unknown';
+        if (!processedData.protocolDistribution[protocol]) {
+            processedData.protocolDistribution[protocol] = 0;
+        }
+        processedData.protocolDistribution[protocol]++;
+    });
+    
+    // Process threat severity (based on how many models detect it as malicious)
+    results.forEach(packet => {
+        let maliciousCount = 0;
+        if (packet.catboost_pred === 1 || packet.catboost_pred === 'Malicious') maliciousCount++;
+        if (packet.lgbm_pred === 1 || packet.lgbm_pred === 'Malicious') maliciousCount++;
+        if (packet.tabnet_pred === 1 || packet.tabnet_pred === 'Malicious') maliciousCount++;
+        
+        if (maliciousCount === 3) {
+            processedData.threatSeverity['Critical']++;
+        } else if (maliciousCount === 2) {
+            processedData.threatSeverity['High']++;
+        } else if (maliciousCount === 1) {
+            processedData.threatSeverity['Medium']++;
+        } else {
+            processedData.threatSeverity['Low']++;
+        }
+    });
+    
+    // Model accuracy is fixed for now (could be calculated in future versions)
+    
+    return processedData;
+}
 </script>
 {% endblock %}

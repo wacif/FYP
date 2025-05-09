@@ -3,3 +3,6 @@ _Design\flask_app\uploads
 __pycache__
 *.pyc
 .venv
+results
+trained_models
+uploads

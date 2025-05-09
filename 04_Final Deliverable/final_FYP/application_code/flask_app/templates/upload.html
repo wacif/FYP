@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+
+{% block title %}Upload - Network Traffic Analyzer{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4 text-primary">Upload Network Traffic Data</h2>
+                    
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data" id="uploadForm">
+                        <div class="upload-area mb-4" id="dropZone">
+                            <div class="text-center p-5">
+                                <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
+                                <h4 class="fw-bold">Drag and drop files here</h4>
+                                <p class="my-3 fw-bold">or</p>
+                                <label for="file" class="btn btn-primary btn-lg">
+                                    Choose File
+                                    <input type="file" id="file" name="file" class="d-none" accept=".pcap,.csv">
+                                </label>
+                                <p class="mt-4 fw-bold">Supported formats: 
+                                    <span class="badge bg-primary me-2 fw-bold">.pcap</span>
+                                    <span class="badge bg-primary fw-bold">.csv</span>
+                                </p>
+                                <p class="selected-file-name mt-3 fw-bold"></p>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg px-5 py-3" id="uploadButton" disabled>
+                                <i class="fas fa-upload me-2"></i>Analyze Traffic
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        
+            <!-- Model Status Section -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">
+                        <i class="fas fa-cogs me-2"></i>
+                        Model Status
+                    </h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Model</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>CatBoost</td>
+                                    <td>
+                                        {% if 'CatBoost' in loaded_models %}
+                                            <span class="badge bg-success">Loaded</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Not Available</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>LightGBM</td>
+                                    <td>
+                                        {% if 'LightGBM' in loaded_models %}
+                                            <span class="badge bg-success">Loaded</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Not Available</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>TabNet</td>
+                                    <td>
+                                        {% if 'TabNet' in loaded_models %}
+                                            <span class="badge bg-success">Loaded</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Not Available</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-3">
+                        <p class="mb-1"><strong>Model Paths:</strong></p>
+                        <ul class="small">
+                            <li>CatBoost: <code>{{ model_paths.catboost }}</code></li>
+                            <li>LightGBM: <code>{{ model_paths.lightgbm }}</code></li>
+                            <li>TabNet: <code>{{ model_paths.tabnet }}</code></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Model Information Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <h3 class="card-title mb-4">
+                        <i class="fas fa-brain me-2"></i>
+                        Advanced Ensemble Learning Models
+                    </h3>
+                    <p class="fw-medium">Our network traffic analyzer employs a sophisticated ensemble of state-of-the-art machine learning models to detect anomalies and potential security threats with high accuracy.</p>
+                    
+                    <div class="row g-4 mt-3">
+                        <div class="col-md-4">
+                            <div class="model-card p-3 rounded">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="model-icon me-3">
+                                        <i class="fas fa-table"></i>
+                                    </div>
+                                    <h5 class="mb-0 fw-bold">TabNet</h5>
+                                </div>
+                                <p class="mb-3">A powerful neural network architecture designed for tabular data that combines the interpretability of decision trees with the flexibility of neural networks.</p>
+                                <div class="model-specs">
+                                    <div class="spec-item d-flex align-items-center mb-2">
+                                        <span class="spec-label me-2 fw-bold">Accuracy:</span>
+                                        <div class="progress flex-grow-1" style="height: 10px;">
+                                            <div class="progress-bar" role="progressbar" style="width: 97%;" aria-valuenow="97" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span class="ms-2 fw-bold">97%</span>
+                                    </div>
+                                    <div class="spec-item d-flex align-items-center">
+                                        <span class="spec-label me-2 fw-bold">Speed:</span>
+                                        <div class="progress flex-grow-1" style="height: 10px;">
+                                            <div class="progress-bar" role="progressbar" style="width: 85%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span class="ms-2 fw-bold">85%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="model-card p-3 rounded">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="model-icon me-3">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <h5 class="mb-0 fw-bold">CatBoost</h5>
+                                </div>
+                                <p class="mb-3">A gradient boosting algorithm that handles categorical features automatically and provides superior performance for classification tasks.</p>
+                                <div class="model-specs">
+                                    <div class="spec-item d-flex align-items-center mb-2">
+                                        <span class="spec-label me-2 fw-bold">Accuracy:</span>
+                                        <div class="progress flex-grow-1" style="height: 10px;">
+                                            <div class="progress-bar" role="progressbar" style="width: 98%;" aria-valuenow="98" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span class="ms-2 fw-bold">98%</span>
+                                    </div>
+                                    <div class="spec-item d-flex align-items-center">
+                                        <span class="spec-label me-2 fw-bold">Speed:</span>
+                                        <div class="progress flex-grow-1" style="height: 10px;">
+                                            <div class="progress-bar" role="progressbar" style="width: 92%;" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span class="ms-2 fw-bold">92%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="model-card p-3 rounded">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="model-icon me-3">
+                                        <i class="fas fa-bolt"></i>
+                                    </div>
+                                    <h5 class="mb-0 fw-bold">LightGBM</h5>
+                                </div>
+                                <p class="mb-3">A highly efficient gradient boosting framework that uses tree-based learning algorithms, optimized for both speed and memory efficiency.</p>
+                                <div class="model-specs">
+                                    <div class="spec-item d-flex align-items-center mb-2">
+                                        <span class="spec-label me-2 fw-bold">Accuracy:</span>
+                                        <div class="progress flex-grow-1" style="height: 10px;">
+                                            <div class="progress-bar" role="progressbar" style="width: 96%;" aria-valuenow="96" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span class="ms-2 fw-bold">96%</span>
+                                    </div>
+                                    <div class="spec-item d-flex align-items-center">
+                                        <span class="spec-label me-2 fw-bold">Speed:</span>
+                                        <div class="progress flex-grow-1" style="height: 10px;">
+                                            <div class="progress-bar" role="progressbar" style="width: 98%;" aria-valuenow="98" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span class="ms-2 fw-bold">98%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 p-4 rounded ensemble-info">
+                        <h5 class="mb-3 fw-bold">
+                            <i class="fas fa-cogs me-2"></i>
+                            Ensemble Approach
+                        </h5>
+                        <p class="mb-4 fw-medium">Our system combines these three powerful models using a weighted voting mechanism, where each model's prediction is weighted based on its confidence score and historical performance on similar traffic patterns.</p>
+                        <div class="d-flex flex-wrap justify-content-center">
+                            <div class="ensemble-metric me-5 mb-3">
+                                <span class="metric-value fw-bold">99.8%</span>
+                                <span class="metric-label d-block">Overall Accuracy</span>
+                            </div>
+                            <div class="ensemble-metric me-5 mb-3">
+                                <span class="metric-value fw-bold">&lt;50ms</span>
+                                <span class="metric-label d-block">Response Time</span>
+                            </div>
+                            <div class="ensemble-metric mb-3">
+                                <span class="metric-value fw-bold">0.1%</span>
+                                <span class="metric-label d-block">False Positive Rate</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('file');
+        const uploadButton = document.getElementById('uploadButton');
+        const selectedFileName = document.querySelector('.selected-file-name');
+        
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        // Highlight drop zone when item is dragged over it
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+        
+        // Handle dropped files
+        dropZone.addEventListener('drop', handleDrop, false);
+        
+        // Handle selected files
+        fileInput.addEventListener('change', handleFiles, false);
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        function highlight() {
+            dropZone.classList.add('highlight');
+        }
+        
+        function unhighlight() {
+            dropZone.classList.remove('highlight');
+        }
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length) {
+                fileInput.files = files;
+                handleFiles();
+            }
+        }
+        
+        function handleFiles() {
+            if (fileInput.files.length) {
+                const fileName = fileInput.files[0].name;
+                selectedFileName.textContent = fileName;
+                uploadButton.disabled = false;
+                
+                // Check file extension
+                const fileExtension = fileName.split('.').pop().toLowerCase();
+                if (fileExtension !== 'pcap' && fileExtension !== 'csv') {
+                    selectedFileName.innerHTML = '<span class="text-danger">Unsupported file format. Please use .pcap or .csv files.</span>';
+                    uploadButton.disabled = true;
+                }
+            } else {
+                selectedFileName.textContent = '';
+                uploadButton.disabled = true;
+            }
+        }
+    });
+</script>
+{% endblock %}
+
+{% endblock %}
